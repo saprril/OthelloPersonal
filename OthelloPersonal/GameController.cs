@@ -40,7 +40,7 @@ namespace OthelloPersonal
                 Position adjacentPosition = positionX + item.Value;
                 if (IsInsideBound(adjacentPosition) && IsInsideBound(positionX))
                 {
-                    if (_board.Squares[adjacentPosition.Column, adjacentPosition.Row].SquarePiece != _board.Squares[positionX.Column, positionX.Row].SquarePiece && 
+                    if (_board.Squares[adjacentPosition.Column, adjacentPosition.Row].SquarePiece != _board.Squares[positionX.Column, positionX.Row].SquarePiece &&
                         _board.Squares[adjacentPosition.Column, adjacentPosition.Row].SquarePiece != Piece.Empty)
                     {
                         validDirections.Add(item.Key);
@@ -99,6 +99,7 @@ namespace OthelloPersonal
                     }
                 }
             }
+            _moveCandidate = new HashSet<Position>(GetValidMoves(Piece.Black));
             _currentState = GameState.PlayerTurn;
         }
         public bool IsInsideBound(Position positionX)
@@ -128,6 +129,46 @@ namespace OthelloPersonal
                                         Enumerable.Range(0, _board.Squares.GetLength(1))
                                                     .Select(j => boardProcessor(_board.Squares[j, i].SquarePiece))));
             }
+        }
+
+        public void DisplayBoard(int indexOfMoveCandidate)
+        {
+            // Console.Clear();
+            Console.WriteLine($"Black = {CountPieces(Piece.Black)}              White={CountPieces(Piece.White)}");
+            Console.WriteLine("+---+---+---+---+---+---+---+---+");
+            List<Position> indexedMoveCandidate = new List<Position>(_moveCandidate);
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Console.Write("|");
+                    if (_board.Squares[j, i].SquarePiece == Piece.Black)
+                    {
+                        Console.Write(" B ");
+                    }
+                    else if (_board.Squares[j, i].SquarePiece == Piece.White)
+                    {
+                        Console.Write(" W ");
+                    }
+                    else
+                    {
+                        if (_moveCandidate.Contains(_board.Squares[j, i].SquarePosition))
+                        {
+                            Console.BackgroundColor = (_board.Squares[j, i].SquarePosition.Equals(indexedMoveCandidate[indexOfMoveCandidate])) ? ConsoleColor.DarkCyan : ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write("   ");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.Write("   ");
+                        }
+                    }
+                }
+                Console.Write("|\n");
+                Console.WriteLine("+---+---+---+---+---+---+---+---+");
+            }
+            Console.WriteLine($"Current Position (GameController)={indexedMoveCandidate[indexOfMoveCandidate]}");
         }
 
         public List<Position> GetValidMoves(Piece pieceColor)
@@ -183,6 +224,7 @@ namespace OthelloPersonal
 
         public void MakeMove(Position piecePosition, Piece pieceColor)
         {
+            _currentState = GameState.PlayerTurn;
             // Console.WriteLine("Move started ===========================================");
             if (IsValidMoves(piecePosition, pieceColor) && IsInsideBound(piecePosition))
             {
@@ -237,7 +279,15 @@ namespace OthelloPersonal
                     }
                 }
             }
+            _moveCandidate = new HashSet<Position>(GetValidMoves((pieceColor == Piece.Black) ? Piece.White : Piece.Black));
+            _currentState = GameState.MoveMade;
         }
+
+        public bool IsGameOver()
+        {
+            return GetValidMoves(Piece.Black).Count == 0 && GetValidMoves(Piece.White).Count == 0;
+        }
+
     }
 
     public enum Directions
