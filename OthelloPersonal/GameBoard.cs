@@ -21,4 +21,26 @@ namespace OthelloPersonal
         public int Size { get; set; }
         public ISquare[,] Squares { get; set; }
     }
+
+    
+    public enum Directions
+    {
+        NorthWest,
+        North,
+        NorthEast,
+        East,
+        SouthEast,
+        South,
+        SouthWest,
+        West
+    }
+
+
+    public enum GameState
+    {
+        Initializing = 0,
+        PlayerTurn = 1,
+        MoveMade = 2,
+        GameOver = 3
+    }
 }

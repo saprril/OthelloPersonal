@@ -6,14 +6,27 @@ namespace OthelloPersonal
     {
         static void Main(string[] args)
         {
+            /*
+            List<IPlayer> players = new List<IPlayer>();
+            Player player1 = new Player("bambang", Piece.Black);
+            Player player2 = new Player("abigail", Piece.White);
+            players.Add(player1);
+            players.Add(player2);
+
+            GameController othelloControl = new GameController(players);
+            othelloControl.InitializeBoard();
+            othelloControl.MakeMove(othelloControl.GetValidMoves(Piece.Black)[0], Piece.Black);
+            othelloControl.DisplayBoard(0);
+            */
+
+
             bool running = true;
-            bool initializing = true;
             List<IPlayer> playerList = new List<IPlayer>();
             bool IsTwoPlayer = false;
 
             int currentPlayerIdx = 0;
 
-            while (initializing)
+            while (running)
             {
                 Console.Clear();
                 Console.WriteLine("Welcome To Othello game!");
@@ -21,81 +34,91 @@ namespace OthelloPersonal
                 (playerList, IsTwoPlayer) = AddPlayer();
                 Console.Clear();
                 // Console.WriteLine(IsTwoPlayer);
-                initializing = false;
-            }
-            GameController othelloControl = new GameController(playerList);
-            othelloControl.InitializeBoard();
-            // othelloControl.DisplayBoard(0);
-
-            if (IsTwoPlayer)
-            {
-                while (!othelloControl.IsGameOver())
+                GameController othelloControl = new GameController(playerList);
+                othelloControl.InitializeBoard();
+                if (IsTwoPlayer)
                 {
-
-                    List<Position> currentPlayerValidMoves = othelloControl.GetValidMoves(playerList[currentPlayerIdx].PlayerPiece);
-                    int moveIterator = 0;
-                    ConsoleKey pressedKey;
-                    do
+                    while (!othelloControl.IsGameOver())
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Current Player: {playerList[currentPlayerIdx].Name} ({playerList[currentPlayerIdx].PlayerPiece})");
-                        Console.WriteLine($"Selected Position (Main Loop) = {moveIterator}: {currentPlayerValidMoves[moveIterator]}");
-                        Console.WriteLine("Use ← → key to navigate, Enter to select:");
 
-                        othelloControl.DisplayBoard(moveIterator);
-                        pressedKey = Console.ReadKey(true).Key;
-                        if (pressedKey == ConsoleKey.RightArrow)
+                        List<Position> currentPlayerValidMoves = othelloControl.GetValidMoves(playerList[currentPlayerIdx].PlayerPiece);
+                        int moveIterator = 0;
+                        ConsoleKey pressedKey;
+                        if (currentPlayerValidMoves.Count == 0)
                         {
-                            moveIterator = (moveIterator == 0) ? currentPlayerValidMoves.Count - 1 : moveIterator - 1;
+                            Console.Clear();
+                            Console.WriteLine($"Current Player: {playerList[currentPlayerIdx].Name} ({playerList[currentPlayerIdx].PlayerPiece})");
+                            Console.WriteLine($"No valid moves, press any key to skip your turn");
+                            othelloControl.DisplayBoard(0);
+                            do
+                            {
+                                pressedKey = Console.ReadKey(true).Key;
+                                othelloControl.MakeMove(new Position { Column = -1, Row = -1 }, playerList[currentPlayerIdx].PlayerPiece);
+
+                            } while (false);
                         }
-                        else if (pressedKey == ConsoleKey.LeftArrow)
+                        else
                         {
-                            moveIterator = (moveIterator + 1) % currentPlayerValidMoves.Count;
+                            do
+                            {
+                                Console.Clear();
+                                Console.WriteLine($"Current Player: {playerList[currentPlayerIdx].Name} ({playerList[currentPlayerIdx].PlayerPiece})");
+                                Console.WriteLine($"Selected Position = {moveIterator}: {currentPlayerValidMoves[moveIterator]}");
+                                Console.WriteLine("Use arrow key to navigate, Enter to select:");
+
+                                othelloControl.DisplayBoard(moveIterator);
+                                pressedKey = Console.ReadKey(true).Key;
+                                if (pressedKey == ConsoleKey.RightArrow || pressedKey == ConsoleKey.DownArrow)
+                                {
+                                    moveIterator = (moveIterator == 0) ? currentPlayerValidMoves.Count - 1 : moveIterator - 1;
+                                }
+                                else if (pressedKey == ConsoleKey.LeftArrow || pressedKey == ConsoleKey.UpArrow)
+                                {
+                                    moveIterator = (moveIterator + 1) % currentPlayerValidMoves.Count;
+                                }
+                            } while (pressedKey != ConsoleKey.Enter);
+                            othelloControl.MakeMove(currentPlayerValidMoves[moveIterator], playerList[currentPlayerIdx].PlayerPiece);
                         }
-                    } while (pressedKey != ConsoleKey.Enter);
-                    othelloControl.MakeMove(currentPlayerValidMoves[moveIterator], playerList[currentPlayerIdx].PlayerPiece);
-                    currentPlayerIdx = (currentPlayerIdx + 1) % playerList.Count;
+                        currentPlayerIdx = (currentPlayerIdx + 1) % playerList.Count;
+                    }
                 }
-            }
-            else
-            {
-                while (!othelloControl.IsGameOver())
+                else
                 {
-
-                    List<Position> currentPlayerValidMoves = othelloControl.GetValidMoves(playerList[currentPlayerIdx].PlayerPiece);
-                    int moveIterator = 0;
-                    ConsoleKey pressedKey;
-                    do
+                    while (!othelloControl.IsGameOver())
                     {
-                        // Console.Clear();
-                        othelloControl.DisplayBoard(moveIterator);
-                        Console.WriteLine($"Current Player: {playerList[currentPlayerIdx].Name} ({playerList[currentPlayerIdx].PlayerPiece})");
-                        Console.WriteLine($"Selected Position (Main Loop) = {moveIterator}");
-                        Console.WriteLine("Use ← → key to navigate, Enter to select:");
-                        pressedKey = Console.ReadKey(true).Key;
-                        if (pressedKey == ConsoleKey.RightArrow)
+
+                        List<Position> currentPlayerValidMoves = othelloControl.GetValidMoves(playerList[currentPlayerIdx].PlayerPiece);
+                        int moveIterator = 0;
+                        ConsoleKey pressedKey;
+                        do
                         {
-                            moveIterator = (moveIterator == 0) ? currentPlayerValidMoves.Count - 1 : moveIterator - 1;
-                        }
-                        else if (pressedKey == ConsoleKey.LeftArrow)
+                            Console.Clear();
+                            othelloControl.DisplayBoard(moveIterator);
+                            Console.WriteLine($"Current Player: {playerList[currentPlayerIdx].Name} ({playerList[currentPlayerIdx].PlayerPiece})");
+                            Console.WriteLine($"Selected Position (Main Loop) = {moveIterator}");
+                            Console.WriteLine("Use ← → key to navigate, Enter to select:");
+                            pressedKey = Console.ReadKey(true).Key;
+                            if (pressedKey == ConsoleKey.RightArrow || pressedKey == ConsoleKey.DownArrow)
+                            {
+                                moveIterator = (moveIterator == 0) ? currentPlayerValidMoves.Count - 1 : moveIterator - 1;
+                            }
+                            else if (pressedKey == ConsoleKey.LeftArrow || pressedKey == ConsoleKey.DownArrow)
+                            {
+                                moveIterator = (moveIterator + 1) % currentPlayerValidMoves.Count;
+                            }
+                        } while (pressedKey != ConsoleKey.Enter);
+                        othelloControl.MakeMove(currentPlayerValidMoves[moveIterator], playerList[currentPlayerIdx].PlayerPiece);
+                        currentPlayerValidMoves = othelloControl.GetValidMoves(playerList[currentPlayerIdx + 1].PlayerPiece);
+                        Random rand = new Random();
+                        if (currentPlayerValidMoves.Count != 0)
                         {
-                            moveIterator = (moveIterator + 1) % currentPlayerValidMoves.Count;
+                            othelloControl.MakeMove(currentPlayerValidMoves[rand.Next(currentPlayerValidMoves.Count)], playerList[currentPlayerIdx + 1].PlayerPiece);
                         }
-                    } while (pressedKey != ConsoleKey.Enter);
-                    othelloControl.MakeMove(currentPlayerValidMoves[moveIterator], playerList[currentPlayerIdx].PlayerPiece);
-                    currentPlayerValidMoves = othelloControl.GetValidMoves(playerList[currentPlayerIdx + 1].PlayerPiece);
-                    Random rand = new Random();
-                    othelloControl.MakeMove(currentPlayerValidMoves[rand.Next(currentPlayerValidMoves.Count)], playerList[currentPlayerIdx + 1].PlayerPiece);
+
+                    }
                 }
+                running = ShowMenu(othelloControl);
             }
-
-
-            while (running)
-            {
-                running = ShowMenu(); // returns false if Exit chosen
-                othelloControl.PrintBoard(); 
-            }
-
         }
 
         static (List<IPlayer>, bool) AddPlayer()
@@ -153,7 +176,7 @@ namespace OthelloPersonal
 
             return (playingPlayer, index != 0);
         }
-        static bool ShowMenu()
+        static bool ShowMenu(GameController controller)
         {
             string[] options = { "Restart", "Exit" };
             int index = 0;
@@ -161,7 +184,9 @@ namespace OthelloPersonal
 
             do
             {
-                // Console.Clear();
+                Console.Clear();
+                Console.WriteLine("---------------------Final Score-------------------");
+                controller.DisplayBoard(0);
                 Console.WriteLine("Use ↑ ↓ to navigate, Enter to select:\n");
 
                 for (int i = 0; i < options.Length; i++)
@@ -192,3 +217,21 @@ namespace OthelloPersonal
     }
 }
 
+
+/*
+Black — C4
+
+White — C3
+
+Black — E6
+
+White — B4
+
+Black — A4
+
+White — A5
+
+Black — B2
+
+White — A3 ← after this move Black has no legal moves
+*/

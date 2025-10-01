@@ -137,38 +137,66 @@ namespace OthelloPersonal
             Console.WriteLine($"Black = {CountPieces(Piece.Black)}              White={CountPieces(Piece.White)}");
             Console.WriteLine("+---+---+---+---+---+---+---+---+");
             List<Position> indexedMoveCandidate = new List<Position>(_moveCandidate);
-            for (int i = 0; i < 8; i++)
+            if (indexedMoveCandidate.Count != 0)
             {
-                for (int j = 0; j < 8; j++)
+                for (int i = 0; i < 8; i++)
                 {
-                    Console.Write("|");
-                    if (_board.Squares[j, i].SquarePiece == Piece.Black)
+                    for (int j = 0; j < 8; j++)
                     {
-                        Console.Write(" B ");
-                    }
-                    else if (_board.Squares[j, i].SquarePiece == Piece.White)
-                    {
-                        Console.Write(" W ");
-                    }
-                    else
-                    {
-                        if (_moveCandidate.Contains(_board.Squares[j, i].SquarePosition))
+                        Console.Write("|");
+                        if (_board.Squares[j, i].SquarePiece == Piece.Black)
                         {
-                            Console.BackgroundColor = (_board.Squares[j, i].SquarePosition.Equals(indexedMoveCandidate[indexOfMoveCandidate])) ? ConsoleColor.DarkCyan : ConsoleColor.White;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("   ");
-                            Console.ResetColor();
+                            Console.Write(" B ");
+                        }
+                        else if (_board.Squares[j, i].SquarePiece == Piece.White)
+                        {
+                            Console.Write(" W ");
+                        }
+                        else
+                        {
+                            if (_moveCandidate.Contains(_board.Squares[j, i].SquarePosition))
+                            {
+                                Console.BackgroundColor = (_board.Squares[j, i].SquarePosition.Equals(indexedMoveCandidate[indexOfMoveCandidate])) ? ConsoleColor.DarkCyan : ConsoleColor.White;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.Write("   ");
+                                Console.ResetColor();
+                            }
+                            else
+                            {
+                                Console.Write("   ");
+                            }
+                        }
+                    }
+                    Console.Write("|\n");
+                    Console.WriteLine("+---+---+---+---+---+---+---+---+");
+                }
+                // Console.WriteLine($"Current Position (GameController)={indexedMoveCandidate[indexOfMoveCandidate]}");
+            }
+            else
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        Console.Write("|");
+                        if (_board.Squares[j, i].SquarePiece == Piece.Black)
+                        {
+                            Console.Write(" B ");
+                        }
+                        else if (_board.Squares[j, i].SquarePiece == Piece.White)
+                        {
+                            Console.Write(" W ");
                         }
                         else
                         {
                             Console.Write("   ");
                         }
                     }
+                    Console.Write("|\n");
+                    Console.WriteLine("+---+---+---+---+---+---+---+---+");
                 }
-                Console.Write("|\n");
-                Console.WriteLine("+---+---+---+---+---+---+---+---+");
             }
-            Console.WriteLine($"Current Position (GameController)={indexedMoveCandidate[indexOfMoveCandidate]}");
+
         }
 
         public List<Position> GetValidMoves(Piece pieceColor)
@@ -250,23 +278,26 @@ namespace OthelloPersonal
                 foreach (var item in originDirections)
                 {
                     Position adjacentCoordinate = piecePosition + DirectionsDict[item];
-                    // Console.WriteLine($"Position {piecePosition.ToString()} Direction {item}, adjacentCoordinate {adjacentCoordinate}, Current Piece {_board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece}");
+                    Console.WriteLine($"Position {piecePosition.ToString()} Direction {item}, adjacentCoordinate {adjacentCoordinate}, Current Piece {_board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece}");
 
-                    while (pieceColor != _board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece &&
-                            _board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece != Piece.Empty
-                            && IsInsideBound(adjacentCoordinate))
+                    while (IsInsideBound(adjacentCoordinate) &&
+                            pieceColor != _board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece &&
+                            _board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece != Piece.Empty)
                     {
                         adjacentCoordinate += DirectionsDict[item];
                         filteredOrigins[item] = adjacentCoordinate;
-                        // Console.WriteLine($"Starting loop Position {piecePosition.ToString()} Direction {item}, adjacentCoordinate {adjacentCoordinate}, Current Piece {_board.Squares[adjacentCoordinate.Column, adjacentCoordinate.Row].SquarePiece}");
+                        Console.WriteLine($"Starting loop Position {piecePosition.ToString()} Direction {item}, adjacentCoordinate {adjacentCoordinate}");
                     }
+
                 }
+                Console.WriteLine(string.Join(", ", filteredOrigins));
                 filteredOrigins = filteredOrigins
+                                    .Where(kv => IsInsideBound(kv.Value))
                                     .Where(kv => _board.Squares[kv.Value.Column, kv.Value.Row].SquarePiece == pieceColor)
                                     .ToDictionary(kv => kv.Key, kv => kv.Value);
 
 
-                // Console.WriteLine($"Filtered dictionaries \n {string.Join(", ", filteredOrigins.Select(kv => $"{kv.Key}: {kv.Value}"))}");
+                Console.WriteLine($"Filtered dictionaries \n {string.Join(", ", filteredOrigins.Select(kv => $"{kv.Key}: {kv.Value}"))}");
 
                 _board.Squares[piecePosition.Column, piecePosition.Row] = new Square(piecePosition, pieceColor, 1);
                 foreach (var item in filteredOrigins)
@@ -288,26 +319,5 @@ namespace OthelloPersonal
             return GetValidMoves(Piece.Black).Count == 0 && GetValidMoves(Piece.White).Count == 0;
         }
 
-    }
-
-    public enum Directions
-    {
-        NorthWest,
-        North,
-        NorthEast,
-        East,
-        SouthEast,
-        South,
-        SouthWest,
-        West
-    }
-
-
-    public enum GameState
-    {
-        Initializing = 0,
-        PlayerTurn = 1,
-        MoveMade = 2,
-        GameOver = 3
     }
 }
