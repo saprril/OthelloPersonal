@@ -11,6 +11,10 @@ namespace OthelloPersonal
         private GameState _currentState;
         public List<IPlayer> IplayerList = playerList;
 
+        public event EventHandler<GameOverEventArgs> OnGameOverEvent;
+
+        public event EventHandler<MoveMadeEventArgs> OnMoveMade;
+
         public Dictionary<Directions, Position> DirectionsDict = new Dictionary<Directions, Position>()
         {
             { Directions.NorthWest, new Position() { Column = -1, Row = -1 } },
@@ -101,6 +105,26 @@ namespace OthelloPersonal
             }
             _moveCandidate = new HashSet<Position>(GetValidMoves(Piece.Black));
             _currentState = GameState.PlayerTurn;
+
+            OnGameOverEvent += (sender, e) =>
+            {
+                Console.WriteLine($"Game Finished, {e.PieceColor} ({IplayerList.Where(x => x.PlayerPiece == e.PieceColor).First().Name}) Is Winning");
+                Console.WriteLine("---------------------Final Score-------------------");
+            };
+
+            OnMoveMade += (sender, e) =>
+            {
+                _board.Squares[e.targetPosition.Column, e.targetPosition.Row] = new Square(e.targetPosition, e.color, 1);
+                foreach (var item in e.positionDictionary)
+                {
+                    Position iter = e.targetPosition;
+                    while (!iter.Equals(item.Value))
+                    {
+                        iter += DirectionsDict[item.Key];
+                        _board.Squares[iter.Column, iter.Row] = new Square(iter, e.color, 1);
+                    }
+                }
+            };
         }
         public bool IsInsideBound(Position positionX)
         {
@@ -134,6 +158,11 @@ namespace OthelloPersonal
         public void DisplayBoard(int indexOfMoveCandidate)
         {
             // Console.Clear();
+            if (IsGameOver())
+            {
+                Piece? winningPiece = GetWinner();
+                HandleGameOver(new GameOverEventArgs(winningPiece));
+            }
             Console.WriteLine($"Black = {CountPieces(Piece.Black)}              White={CountPieces(Piece.White)}");
             Console.WriteLine("+---+---+---+---+---+---+---+---+");
             List<Position> indexedMoveCandidate = new List<Position>(_moveCandidate);
@@ -299,6 +328,8 @@ namespace OthelloPersonal
 
                 Console.WriteLine($"Filtered dictionaries \n {string.Join(", ", filteredOrigins.Select(kv => $"{kv.Key}: {kv.Value}"))}");
 
+                HandleMoveMad(new MoveMadeEventArgs(filteredOrigins, piecePosition, pieceColor));
+                /*
                 _board.Squares[piecePosition.Column, piecePosition.Row] = new Square(piecePosition, pieceColor, 1);
                 foreach (var item in filteredOrigins)
                 {
@@ -308,10 +339,26 @@ namespace OthelloPersonal
                         iter += DirectionsDict[item.Key];
                         _board.Squares[iter.Column, iter.Row] = new Square(iter, pieceColor, 1);
                     }
-                }
+                }*/
+
+            }
+            if (IsGameOver())
+            {
+                _currentState = GameState.GameOver;
+            }
+            else
+            {
+                _currentState = GameState.MoveMade;
             }
             _moveCandidate = new HashSet<Position>(GetValidMoves((pieceColor == Piece.Black) ? Piece.White : Piece.Black));
-            _currentState = GameState.MoveMade;
+        }
+
+        public Piece? GetWinner()
+        {
+            bool isDraw = (CountPieces(Piece.Black) == CountPieces(Piece.White));
+            Piece? mostPiece = (CountPieces(Piece.Black) > CountPieces(Piece.White)) ? Piece.Black : Piece.White;
+            mostPiece = (isDraw) ? null : mostPiece;
+            return mostPiece;
         }
 
         public bool IsGameOver()
@@ -319,5 +366,39 @@ namespace OthelloPersonal
             return GetValidMoves(Piece.Black).Count == 0 && GetValidMoves(Piece.White).Count == 0;
         }
 
+        protected virtual void HandleGameOver(GameOverEventArgs e)
+        {
+            OnGameOverEvent?.Invoke(this, e);
+        }
+
+        protected virtual void HandleMoveMad(MoveMadeEventArgs e) {
+            OnMoveMade?.Invoke(this, e);
+        }
+
+
+    }
+
+    public class GameOverEventArgs : EventArgs
+    {
+        public Piece? PieceColor { get; set; }
+
+        public GameOverEventArgs(Piece? winning)
+        {
+            PieceColor = winning;
+        }
+    }
+
+    public class MoveMadeEventArgs : EventArgs
+    {
+        public Dictionary<Directions, Position> positionDictionary;
+        public Position targetPosition;
+        public Piece color;
+
+        public MoveMadeEventArgs(Dictionary<Directions, Position> posDict, Position targetPos, Piece color)
+        {
+            positionDictionary = posDict;
+            targetPosition = targetPos;
+            this.color = color;
+        }
     }
 }

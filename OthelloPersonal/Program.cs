@@ -185,7 +185,6 @@ namespace OthelloPersonal
             do
             {
                 Console.Clear();
-                Console.WriteLine("---------------------Final Score-------------------");
                 controller.DisplayBoard(0);
                 Console.WriteLine("Use ↑ ↓ to navigate, Enter to select:\n");
 
@@ -234,4 +233,7 @@ White — A5
 Black — B2
 
 White — A3 ← after this move Black has no legal moves
+
+Shortest Black Win
+e6 f4 e3 f6 g5 d6 e7 f5 c5
 */
