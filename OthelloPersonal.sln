@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloPersonal", "OthelloPersonal\OthelloPersonal.csproj", "{DDA891A9-F0A8-4AB5-AA83-DD3EFD81AEE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloPersonal.Backend", "OthelloPersonal.Backend\OthelloPersonal.Backend.csproj", "{43E5B156-409E-42D8-9EDA-9F1B61334079}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloPersonal.UI", "OthelloPersonal.UI\OthelloPersonal.UI.csproj", "{80EF3252-0E4A-4809-A215-1F02838737EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,30 @@ Global
 		{DDA891A9-F0A8-4AB5-AA83-DD3EFD81AEE4}.Release|x64.Build.0 = Release|Any CPU
 		{DDA891A9-F0A8-4AB5-AA83-DD3EFD81AEE4}.Release|x86.ActiveCfg = Release|Any CPU
 		{DDA891A9-F0A8-4AB5-AA83-DD3EFD81AEE4}.Release|x86.Build.0 = Release|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Debug|x64.Build.0 = Debug|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Debug|x86.Build.0 = Debug|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Release|x64.ActiveCfg = Release|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Release|x64.Build.0 = Release|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Release|x86.ActiveCfg = Release|Any CPU
+		{43E5B156-409E-42D8-9EDA-9F1B61334079}.Release|x86.Build.0 = Release|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Debug|x64.Build.0 = Debug|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Release|x64.Build.0 = Release|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{80EF3252-0E4A-4809-A215-1F02838737EA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
