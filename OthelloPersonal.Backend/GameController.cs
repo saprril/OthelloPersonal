@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using OthelloPersonal.Backend.Enums;
 using OthelloPersonal.Backend.Interfaces;
 using OthelloPersonal.Backend.Models;
+using OthelloPersonal.Backend.EventArg;
 
 namespace OthelloPersonal.Backend;
 public class GameController(List<IPlayer> playerList)
@@ -348,28 +349,4 @@ public class GameController(List<IPlayer> playerList)
     }
 
 
-}
-
-public class GameOverEventArgs : EventArgs
-{
-    public Piece? PieceColor { get; set; }
-
-    public GameOverEventArgs(Piece? winning)
-    {
-        PieceColor = winning;
-    }
-}
-
-public class MoveMadeEventArgs : EventArgs
-{
-    public Dictionary<Directions, Position> positionDictionary;
-    public Position targetPosition;
-    public Piece color;
-
-    public MoveMadeEventArgs(Dictionary<Directions, Position> posDict, Position targetPos, Piece color)
-    {
-        positionDictionary = posDict;
-        targetPosition = targetPos;
-        this.color = color;
-    }
 }
